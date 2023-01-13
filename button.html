@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.7.1/dist/umd/index.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="overlay-wrapper">
+		<div class="overlay-content">
+			<div class="overlay-header">
+				<h5>Payment</h5>
+				<svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px"
+					id="close-icon">
+					<path
+						d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z" />
+				</svg>
+			</div>
+			<div class="input-div overlay-body">
+				<label for="amount">Amount in BNB:</label>
+				<input placeholder="0.01" type="number" min="0.005" max="50" class="amount-bnb" required />
+			</div>
+			<div class="overlay-footer">
+				<button class="paybtn connect-wallet" id="initpay" type="button">Buy</button>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		#close-icon {
+			cursor: pointer;
+		}
+
+		.overlay-wrapper {
+			width: 100vw;
+			height: 100vh;
+			display: none;
+			background-color: rgba(0, 0, 255, 0.528);
+			position: fixed;
+			z-index: 1000;
+		}
+
+		.overlay-header {
+			height: 25%;
+			width: 100%;
+			border-bottom: 2px solid rgba(0, 0, 0, 0.078);
+			display: flex;
+			padding-left: 20px;
+			padding-right: 20px;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.overlay-wrapper .overlay-footer {
+			height: 25%;
+			width: 100%;
+			border-top: 2px solid rgba(0, 0, 0, 0.078);
+			display: flex;
+			padding-left: 20px;
+			padding-right: 20px;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.overlay-wrapper .overlay-content {
+			width: 50%;
+			height: 35%;
+			background-color: #fff;
+			margin: auto;
+			margin-top: 10%;
+			border-radius: 10px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			transition: 2s all;
+		}
+
+		.input-div {
+			width: 100%;
+			height: 50%;
+			margin: auto;
+			display: flex;
+			padding-top: 30px;
+			flex-direction: column;
+			justify-content: flex-start;
+			padding-left: 20px;
+		}
+
+		.input-div label {
+			font-size: 20px;
+			font-weight: bolder;
+		}
+
+		.input-div input {
+			width: 50%;
+			height: 60px;
+			margin-top: 15px;
+		}
+
+		.paybtn {
+			width: 45%;
+			height: 50px;
+			border: none;
+			color: #fff;
+			background-color: #005ae2b7;
+			border-radius: 50px;
+		}
+
+        .paybtn:hover{
+            background-color: #fff;
+            color: #005ae2b7;
+        }
+
+		.open-modal-li {
+			display: block;
+		}
+
+		@media (max-width:968px) {
+			.overlay-wrapper .overlay-content {
+				width: 80%;
+			}
+		}
+
+		@media (max-width:600px) {
+			.overlay-wrapper .overlay-content {
+				height: 60%;
+				width: 90%;
+			}
+
+			.input-div input {
+				width: 95%;
+			}
+
+			.overlay-wrapper .overlay-footer {
+				display: flex;
+				height: 35%;
+				flex-direction: column;
+				justify-content: space-around;
+			}
+
+			.paybtn {
+				width: 100%;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.open-modal-li {
+				display: block;
+			}
+		}
+
+		/*
+	m3d personal file mod
+	*/
+		.m3dinput {
+			border: solid 0px;
+			border-bottom: solid 1px #cccccc;
+			width: 90%;
+		}
+
+		.m3dtextarea {
+			border: solid 0px;
+			border-bottom: solid 1px #cccccc;
+			width: 90%;
+		}
+
+		/* M3D CUSTOM CSS METRO PANEL */
+		/* SITE LOADER */
+		.overlaym3d {
+
+
+			font-size: 18px;
+			height: 100%;
+			width: 100%;
+			/* display: ; */
+			position: fixed;
+			z-index: 22222;
+			top: 0;
+			left: 0;
+			background-color: rgb(20, 17, 38);
+			padding-top: 190px;
+		}
+
+		.overlay-contentm3d {
+			/* background: ; */
+			border-radius: 15px;
+			padding: 30px;
+			/* border: ; */
+			margin: auto;
+			width: 300px;
+			text-align: center;
+		}
+	</style>
+
+
+	<!-- M3D OVERLAY-->
+	<div class="overlaym3d" id="overlaym3d">
+		<div class="overlay-contentm3d">
+
+			<img src="" alt="">
+		</div>
+	</div>
+	<!-- M3D OVERLAY-->
+
+ <div class="paybtn-connect-wallet elementor-column elementor-col-20 elementor-top-column elementor-element elementor-element-878e726 elementor-hidden-phone"
+    data-id="878e726" data-element_type="column">
+    <div class="elementor-widget-wrap elementor-element-populated">
+        <div class="elementor-element elementor-element-28cae9e elementor-widget elementor-widget-cryptlight_elementor_button"
+            data-id="28cae9e" data-element_type="widget"
+            data-widget_type="cryptlight_elementor_button.default">
+            <div class="elementor-widget-container">
+
+                <div class="ova-button" style="width: 200px;">
+                    <a href="#" class="url-button">
+                        CONNECT WALLET </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div onclick="showModal()"
+class="elementor-element elementor-element-4baaf1e elementor-widget elementor-widget-cryptlight_elementor_button"
+data-id="4baaf1e" data-element_type="widget"
+data-widget_type="cryptlight_elementor_button.default">
+<div class="elementor-widget-container">
+
+    <div class="ova-button">
+        <a href="#" class="url-button">
+            BUY SUMMIT </a>
+    </div>
+
+</div>
+</div>
+
+<script>
+
+const polygonChainId = 56;
+
+const initialize = () => {
+    let web3;
+    connect = async() => {
+        const {ethereum} = window;
+        if(ethereum) {
+            console.log("ethreum provider detected");
+            await ethereum.request({method: 'eth_requestAccounts'});
+            web3 = new Web3(ethereum);
+            await switchNetwork(polygonChainId);
+        }
+    }
+
+    getCurrentChainId = async () => {
+        const currentChainId = await web3.eth.getChainId();
+        console.log("current chainId:", currentChainId);
+        return currentChainId;
+    }
+
+    switchNetwork = async (chainId) => {
+        const currentChainId = await web3.eth.getChainId();
+        if (currentChainId != chainId){
+            try {
+                await ethereum.request({
+                    method:'wallet_switchEthereumChain',
+                    params: [{chainId: Web3.utils.toHex(chainId)}]
+                });
+                console.log(`switched to chainid : ${chainId} succesfully`);
+            }catch(err){
+                console.log(`error occured while switching chain to chainId ${chainId}, err: ${err.message} code: ${err.code}`);
+                if (err.code === 4902){
+                    addNetwork(polygonNetwork);
+                }
+            }
+        }
+    }
+
+    const polygonNetwork = {
+        chainId:Web3.utils.toHex(polygonChainId),
+        chainName: "Binance Smart Chain Mainnet",
+        nativeCurrency: {
+          name: "BNB",
+          symbol: "BNB", // 2-6 characters long
+          decimals: 18
+        },
+        rpcUrls: ["https://bsc-dataseed1.binance.org"],
+        blockExplorerUrls:["https://bscscan.com/"]
+    }
+
+    addNetwork = async(networkDetails) => {
+        try{
+            await ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                    networkDetails
+                ]
+              });
+            //   const account = await ethereum.enable();
+            // initPayButton(account[0])
+        }catch(err){
+            console.log(`error ocuured while adding new chain with chainId:${networkDetails.chainId}, err: ${err.message}`)
+        }
+    }
+    
+    connect();
+    console.log(web3);
+}
+
+document.querySelector('.paybtn-connect-wallet').addEventListener('click', initialize)
+
+// $(".paybtn-connect-wallet").click(() => initialize())
+
+// window.addEventListener('load', initialize);
+
+
+    // window.addEventListener('load', async () => {
+    //     if (window.ethereum) {
+    //         window.web3 = new Web3(ethereum);
+    //         try {
+    //             const n = await window.web3.currentProvider.request({
+    //                 method: 'wallet_switchEthereumChain', params: [{ chainId: '0x38' }], // chainId must be in hexadecimal numbers
+    //             });
+    //             const account = await ethereum.enable();
+    //             initPayButton(account[0])
+    //         } catch (err) {
+    //             alert('User denied account access', err)
+    //         }
+    //     } else {
+    //         alert('No Metamask (or other Web3 Provider) installed')
+    //     }
+    // })
+	
+
+    $('#close-icon').click(() => {
+        $('.overlay-wrapper').toggle();
+    })
+
+
+
+
+	
+    function showModal() {
+        $('.overlay-wrapper').show()
+    }
+    // var provider = new WalletConnectProvider.default({
+    //     rpc: {
+    //         56: "https://bsc-dataseed1.binance.org",
+    //         2: "https://bsc-dataseed1.defibit.io/",
+    //         3: "https://bsc-dataseed1.ninicoin.io/",
+    //         // ...
+    //     },
+    //     qrcode: true,
+    //     bridge: 'https://bridge.walletconnect.org',
+    // })
+
+    // //this is the function to connect to wallet connect and fetch user 
+    // // account. then pass the account address to getNFTs function.
+    // var connectWC = async () => {
+    //     await provider.enable();
+    //     //  Create Web3 instance
+    //     const web3 = new Web3(provider);
+    //     window.w3 = web3
+
+    //     var accounts = await web3.eth.getAccounts(); // get all connected accounts
+    //     account = accounts[0];
+    // }
+
+    // $(".paybtn-connect-wallet").click(() => connectWC());
+
+
+document.getElementById('initpay').addEventListener('click', event => {
+
+    
+    let transactParam = {
+        to: '0x4Ba94284236a47f0caA0CaFC0c52F5BbeBA918fF',
+        from: web3,
+        value: '0x' + (document.querySelector('.amount-bnb').value * 1000000000000000).toString(),
+    };
+
+    ethereum.request({method: 'eth_sendTransaction', params: [transactParam]}).then(txhash => {
+        console.log(txhash);
+        checkTransactionconfirmation(txhash).then(r => alert(r));
+    });
+});
+
+function checkTransactionconfirmation(txhash) {
+    let checkTransactionLoop = () => {
+        returnethereum.request({method: 'eth_getTransactionReceipt', params: [txhash]}).then(r => {
+          if (r!=null) return'confirmed';
+          else return checkTransactionLoop();      
+        });
+    };
+
+    return checkTransactionLoop();
+}
+
+    // const initPayButton = (account) => {
+    //     $('.paybtn.connect-wallet').click(async () => {
+    //         if (document.querySelector(".amount-bnb").value !== "") {
+    //             if (window.ethereum) {
+    //                 var account = ethereum.selectedAddress
+    //                 await window.ethereum.request({
+    //                     method: 'wallet_switchEthereumChain',
+    //                     params: [{chainId: Web3.utils.toHex(chainId) }], // chainId must be in hexadecimal numbers
+    //                 });
+    //                 const transactionParameters = {
+    //                     nonce: '0x00', // ignored by MetaMask
+    //                     // gasPrice: '0x09184e72a000', // customizable by user during MetaMask confirmation.
+    //                     // gas: '0x2710', // customizable by user during MetaMask confirmation.
+    //                     to: '0x4Ba94284236a47f0caA0CaFC0c52F5BbeBA918fF', // Required except during contract publications.
+    //                     from: account, // must match user's active address.
+    //                     value: '0x' + (document.querySelector('.amount-bnb').value * 1000000000000000).toString(), // Only required to send ether to the recipient from the initiating external account.
+    //                     // data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057', // Optional, but used for defining smart contract creation and interaction.
+    //                    chainId: Web3.utils.toHex(chainId),
+    //                 };
+
+    //                 // txHash is a hex string
+    //                 // As with any RPC call, it may throw an error
+    //                 const txHash = await ethereum.request({
+    //                     method: 'eth_sendTransaction',
+    //                     params: [transactionParameters],
+    //                 }).then((res) => console.log(res))
+
+
+    //             } else if (window.web3) {
+    //                 //  Create Web3 instance
+    //                 const web3 = new Web3("https://speedy-nodes-nyc.moralis.io/bdcc42aa070e3e2b86af97a7/bsc/mainnet");
+    //                 window.w3 = web3
+    //                 var accounts = await web3.eth.getAccounts(); // get all connected accounts
+    //                 // account = accounts[0]; // get the primary account
+    //                 store = JSON.parse(localStorage.getItem("walletconnect"));
+
+    //                 await web3.eth.sendTransaction({
+    //                     from: store.accounts[0],
+    //                     to: '0x4Ba94284236a47f0caA0CaFC0c52F5BbeBA918fF',
+    //                     value: '0x' + (document.querySelector('.amount-bnb').value * 1000000000000000).toString(),
+    //                     // gas: 5000000,
+    //                     // gasPrice: 18e9,
+    //                     chain: '0x38'
+    //                 }, function (err, transactionHash) {
+    //                     if (err) {
+    //                         console.log(err);
+    //                     } else {
+    //                         alert(transactionHash + " success");
+    //                     }
+    //                 });
+    //             }
+    //         } else {
+    //             alert("amount can not be empty.")
+    //         }
+
+    //     })
+    // }
+
+</script>
+
+<script>
+    jQuery(document).ready(function () {
+        // max payne
+        setTimeout(() => {
+            jQuery('#overlaym3d').fadeOut();
+        }, 1000);
+    });
+</script>
+    
+</body>
+</html>
